@@ -10,7 +10,7 @@
 #import "../Models/Task.h"
 #import "Masonry.h"
 
-@interface TodoViewController ()<UITextFieldDelegate>
+@interface TodoViewController ()<UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITextField *inputField;
 @property (nonatomic, strong) UITableView *todoTableView;
@@ -46,7 +46,7 @@
 
 - (void)prepareViews {
     self.navigationItem.title = @"Todo List";
-    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addItem)];
+    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonClicked)];
     self.navigationItem.rightBarButtonItem = add;
     UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(checkHistory)];
     self.navigationItem.leftBarButtonItem = history;
@@ -72,7 +72,10 @@
     _helloLabel.font = [UIFont boldSystemFontOfSize:20];
     [self.view addSubview:_helloLabel];
     
-    
+    Task *mockTask = [[Task alloc] init];
+    mockTask.taskName = @"LoveDang";
+    mockTask.taskType = FinishedEveryday;
+    [_todoList addObject:mockTask];
 }
 
 - (void)addConstraints {
@@ -110,6 +113,12 @@
 
 - (void) addItem {
     NSLog(@"add");
+    NSString *newName = _inputField.text;
+    NSLog(@"new task name: %@", newName);
+    Task *newTask = [[Task alloc] init];
+    newTask.taskName = newName;
+    newTask.taskType = FinishedEveryday;
+    [_todoList addObject:newTask];
 }
 
 - (void)dayChanged {
@@ -134,6 +143,17 @@
 
 - (void)saveFiles {
     //TODO: 当数组变化保存本地文件
+}
+
+#pragma mark - UITableView
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    TodoItemTableViewCell *cell = [_todoTableView dequeueReusableCellWithIdentifier:@"todo-item-cell"];
+    return cell;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return _todoList.count;
 }
 
 /*
