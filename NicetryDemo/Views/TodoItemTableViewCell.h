@@ -6,10 +6,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "../Models/Task.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TodoItemTableViewCell : UITableViewCell
+
+@property (nonatomic, strong) Task * task;
 
 @end
 

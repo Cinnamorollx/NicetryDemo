@@ -32,7 +32,7 @@
     ovc.tabBarItem.image = [UIImage imageNamed:@"shopping-cart"];
     
     TodoViewController *tdvc = [[TodoViewController alloc] init];
-    tdvc.tabBarItem.title = @"ToDo List";
+    tdvc.tabBarItem.title = @"Todo List";
     tdvc.tabBarItem.image = [UIImage imageNamed:@"todo-list"];
     
     XHSViewController *xhs = [[XHSViewController alloc] init];
@@ -44,7 +44,7 @@
     vfvc.tabBarItem.image = [UIImage imageNamed:@"videos"];
     
     
-    NSArray *controllers = @[ovc, tdvc, xhs, vfvc];
+    NSArray *controllers = @[tdvc, ovc, xhs, vfvc];
     NSMutableArray *navControllers = [NSMutableArray array];
     
     for (UIViewController *controller in controllers) {
@@ -55,7 +55,7 @@
    
     tbc.viewControllers = navControllers;
     tbc.tabBar.translucent = YES;
-    tbc.selectedIndex = 1;
+    tbc.selectedIndex = 0;
     _window.rootViewController = tbc;
     [_window makeKeyAndVisible];
     

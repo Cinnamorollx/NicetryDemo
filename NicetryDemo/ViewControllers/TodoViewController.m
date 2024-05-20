@@ -32,8 +32,9 @@
     [self prepareViews];
     [self addConstraints];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dayChanged) name:NSCalendarDayChangedNotification object:nil]; //没啥用，检测日期变了更新一下界面的日期,避免有人熬夜结果日期一直不变
-    //TODO: 监听数组变化保存本地file
+    //TODO: 读取本地文件
     [_todoTableView registerClass:[TodoItemTableViewCell class] forCellReuseIdentifier:@"todo-item-cell"];
+    
 }
 
 - (void)dealloc {
@@ -44,7 +45,7 @@
 #pragma mark - Views
 
 - (void)prepareViews {
-    self.navigationItem.title = @"要做的事";
+    self.navigationItem.title = @"Todo List";
     UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addItem)];
     self.navigationItem.rightBarButtonItem = add;
     UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(checkHistory)];
@@ -67,7 +68,7 @@
     [self.view addSubview:_timeLabel];
     
     _helloLabel = [[UILabel alloc] init];
-    _helloLabel.text = @"Hi,今天也要加油喔⛽️😇";
+    _helloLabel.text = @"Hello, 今天也要加油喔⛽️😇";
     _helloLabel.font = [UIFont boldSystemFontOfSize:20];
     [self.view addSubview:_helloLabel];
     
@@ -103,6 +104,10 @@
 
 #pragma mark - Methods
 
+- (void) addButtonClicked {
+    NSLog(@"add button clicked");
+}
+
 - (void) addItem {
     NSLog(@"add");
 }
@@ -125,6 +130,10 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSLog(@"task added");
     return YES;
+}
+
+- (void)saveFiles {
+    //TODO: 当数组变化保存本地文件
 }
 
 /*
