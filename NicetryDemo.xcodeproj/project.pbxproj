@@ -17,6 +17,9 @@
 		772FF5FF2BF462CD00AAC799 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 772FF5FE2BF462CD00AAC799 /* Base */; };
 		772FF6022BF462CD00AAC799 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 772FF6012BF462CD00AAC799 /* main.m */; };
 		7761F7102BF625C5000C05FE /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7761F70F2BF625C5000C05FE /* DetailViewController.m */; };
+		77C764372BFAEE3500D60009 /* VideoFlowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C764362BFAEE3500D60009 /* VideoFlowViewController.m */; };
+		77C7643A2BFAF44A00D60009 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C764392BFAF44A00D60009 /* Task.m */; };
+		77C764452BFB4BBD00D60009 /* TodoItemTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C764442BFB4BBD00D60009 /* TodoItemTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +42,12 @@
 		772FF6012BF462CD00AAC799 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7761F70E2BF625C5000C05FE /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		7761F70F2BF625C5000C05FE /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		77C764352BFAEE3500D60009 /* VideoFlowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoFlowViewController.h; sourceTree = "<group>"; };
+		77C764362BFAEE3500D60009 /* VideoFlowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoFlowViewController.m; sourceTree = "<group>"; };
+		77C764382BFAF44A00D60009 /* Task.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
+		77C764392BFAF44A00D60009 /* Task.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
+		77C764432BFB4BBD00D60009 /* TodoItemTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodoItemTableViewCell.h; sourceTree = "<group>"; };
+		77C764442BFB4BBD00D60009 /* TodoItemTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodoItemTableViewCell.m; sourceTree = "<group>"; };
 		85DE19A2336288E78AC1095D /* Pods-NicetryDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NicetryDemo.debug.xcconfig"; path = "Target Support Files/Pods-NicetryDemo/Pods-NicetryDemo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,20 +82,17 @@
 				77150E9E2BF5B4F000FB8207 /* XHSViewController.m */,
 				7761F70E2BF625C5000C05FE /* DetailViewController.h */,
 				7761F70F2BF625C5000C05FE /* DetailViewController.m */,
+				77C764352BFAEE3500D60009 /* VideoFlowViewController.h */,
+				77C764362BFAEE3500D60009 /* VideoFlowViewController.m */,
 			);
 			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		772ECFA72BF4AEA8001D14BA /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Views;
 			sourceTree = "<group>";
 		};
 		772ECFA82BF4AEB0001D14BA /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				77C764382BFAF44A00D60009 /* Task.h */,
+				77C764392BFAF44A00D60009 /* Task.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -112,8 +118,8 @@
 		772FF5EE2BF462CC00AAC799 /* NicetryDemo */ = {
 			isa = PBXGroup;
 			children = (
+				77C7643F2BFB476700D60009 /* Views */,
 				772ECFA82BF4AEB0001D14BA /* Models */,
-				772ECFA72BF4AEA8001D14BA /* Views */,
 				772ECFA62BF4AE9B001D14BA /* ViewControllers */,
 				772FF5EF2BF462CC00AAC799 /* AppDelegate.h */,
 				772FF5F02BF462CC00AAC799 /* AppDelegate.m */,
@@ -125,6 +131,15 @@
 				772FF6012BF462CD00AAC799 /* main.m */,
 			);
 			path = NicetryDemo;
+			sourceTree = "<group>";
+		};
+		77C7643F2BFB476700D60009 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				77C764432BFB4BBD00D60009 /* TodoItemTableViewCell.h */,
+				77C764442BFB4BBD00D60009 /* TodoItemTableViewCell.m */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		EB2C2E830A6AD93A5AFEC934 /* Pods */ = {
@@ -251,10 +266,13 @@
 			files = (
 				772FF5F12BF462CC00AAC799 /* AppDelegate.m in Sources */,
 				772FF6022BF462CD00AAC799 /* main.m in Sources */,
+				77C764452BFB4BBD00D60009 /* TodoItemTableViewCell.m in Sources */,
+				77C764372BFAEE3500D60009 /* VideoFlowViewController.m in Sources */,
 				772FF5F42BF462CC00AAC799 /* SceneDelegate.m in Sources */,
 				772ECFAE2BF4B1EA001D14BA /* TodoViewController.m in Sources */,
 				77150E9F2BF5B4F000FB8207 /* XHSViewController.m in Sources */,
 				772ECFAB2BF4AEDF001D14BA /* OrderViewController.m in Sources */,
+				77C7643A2BFAF44A00D60009 /* Task.m in Sources */,
 				7761F7102BF625C5000C05FE /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

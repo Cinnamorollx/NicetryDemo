@@ -9,6 +9,7 @@
 #import "ViewControllers/OrderViewController.h"
 #import "ViewControllers/TodoViewController.h"
 #import "ViewControllers/XHSViewController.h"
+#import "ViewControllers/VideoFlowViewController.h"
 @interface SceneDelegate ()
 
 @end
@@ -38,8 +39,12 @@
     xhs.tabBarItem.title = @"小红书";
     xhs.tabBarItem.image = [UIImage imageNamed:@"xhs"];
     
+    VideoFlowViewController *vfvc = [[VideoFlowViewController alloc] init];
+    vfvc.tabBarItem.title = @"视频流";
+    vfvc.tabBarItem.image = [UIImage imageNamed:@"videos"];
     
-    NSArray *controllers = @[ovc, tdvc, xhs];
+    
+    NSArray *controllers = @[ovc, tdvc, xhs, vfvc];
     NSMutableArray *navControllers = [NSMutableArray array];
     
     for (UIViewController *controller in controllers) {
@@ -50,6 +55,7 @@
    
     tbc.viewControllers = navControllers;
     tbc.tabBar.translucent = YES;
+    tbc.selectedIndex = 1;
     _window.rootViewController = tbc;
     [_window makeKeyAndVisible];
     

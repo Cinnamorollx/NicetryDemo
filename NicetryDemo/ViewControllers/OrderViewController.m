@@ -63,6 +63,7 @@
     _textLabel.font = [UIFont systemFontOfSize:12];
     _textLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:_textLabel];
+    
 }
 
 - (void)addConstraints {
@@ -211,10 +212,14 @@
 - (NSMutableDictionary *)dataDict {
     if(!_dataDict) {
         _dataDict = [NSMutableDictionary dictionary];
-        [_dataDict setObject:@[@[@"黎明杀机",@"https://media.st.dl.eccdnx.com/steam/apps/381210/header.jpg?t=1715700452"],@[@"CS2",@"https://media.st.dl.eccdnx.com/steam/apps/730/header_schinese.jpg?t=1698860631"],@[@"Deceit",@"https://media.st.dl.eccdnx.com/steam/apps/466240/header.jpg?t=1710352642"],@[@"恐鬼症",@"https://media.st.dl.eccdnx.com/steam/apps/739630/header.jpg?t=1702309974"]] forKey:@"恐怖游戏"];
+        [_dataDict setObject:@[@[@"黎明杀机",@"https://media.st.dl.eccdnx.com/steam/apps/381210/header.jpg?t=1715700452"],@[@"Deceit",@"https://media.st.dl.eccdnx.com/steam/apps/466240/header.jpg?t=1710352642"],@[@"恐鬼症",@"https://media.st.dl.eccdnx.com/steam/apps/739630/header.jpg?t=1702309974"],@[@"杀戮天使",@"https://media.st.dl.eccdnx.com/steam/apps/537110/header_schinese.jpg?t=1674468422"]] forKey:@"恐怖游戏"];
         [_dataDict setObject:@[@[@"炉石传说",@"https://static0.gamerantimages.com/wordpress/wp-content/uploads/Hearthstone-Loading-Screen.jpg?q=50&fit=contain&w=1140&h=&dpr=1.5"],@[@"游戏王",@"https://static.wikia.nocookie.net/yugioh/images/9/9b/YugiohOriginalManga-VOL08-JP.jpg/revision/latest?cb=20101121154030"],@[@"影之诗",@"https://upload.wikimedia.org/wikipedia/en/5/5e/Shadowverse.jpg"],@[@"皇室战争",@"https://i1.sndcdn.com/artworks-000254527034-8cgdw8-t500x500.jpg"],@[@"酒馆战棋",@"https://image.uc.cn/s/wemedia/s/upload/2021/f4f778e4518c41e19077c35c07543f5b.jpg"]] forKey:@"卡牌游戏"];
         
         [_dataDict setObject:@[@[@"弹丸论破",@"https://media.st.dl.eccdnx.com/steam/apps/567640/header.jpg?t=1715701301"],@[@"命运石之门",@"https://media.st.dl.eccdnx.com/steam/apps/412830/header_schinese.jpg?t=1715703398"],@[@"逆转裁判",@"https://media.st.dl.eccdnx.com/steam/apps/787480/header.jpg?t=1712623869"]] forKey:@"文字游戏"];
+        
+        [_dataDict setObject:@[@[@"CS2",@"https://media.st.dl.eccdnx.com/steam/apps/730/header_schinese.jpg?t=1698860631"],@[@"LOL",@"https://tse4-mm.cn.bing.net/th/id/OIP-C.KqZMdW2jG_q3__J0UCEP6gHaEK?w=302&h=180&c=7&r=0&o=5&dpr=2&pid=1.7"],@[@"Valorant",@"https://tse1-mm.cn.bing.net/th/id/OIP-C.GSnO2Eie9NtsS83kIh-67QHaEK?w=271&h=180&c=7&r=0&o=5&dpr=2&pid=1.7"],@[@"DOTA2",@"https://media.st.dl.eccdnx.com/steam/apps/570/header.jpg?t=1714502360"]] forKey:@"竞技游戏"];
+        
+        
     }
     return _dataDict;
 }
