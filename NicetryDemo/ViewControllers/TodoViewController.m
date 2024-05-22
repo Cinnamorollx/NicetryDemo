@@ -54,6 +54,7 @@
     _inputField = [[UITextField alloc] init];
     _inputField.backgroundColor = [UIColor blueColor];
     [self.view addSubview:_inputField];
+    _inputField.delegate = self;
     
     _todoTableView = [[UITableView alloc] init];
     [self.view addSubview:_todoTableView];
@@ -134,16 +135,29 @@
     //TODO: histroy page
 }
 
-#pragma mark - UITextFieldDelegate
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    NSLog(@"task added");
-    return YES;
-}
-
 - (void)saveFiles {
     //TODO: 当数组变化保存本地文件
 }
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    NSLog(@"task added %@",_inputField.text);
+    _inputField.text = @"";
+    [_inputField resignFirstResponder];
+    return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    [_inputField mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.bottom.mas_equalTo(k)
+    }];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+}
+
 
 #pragma mark - UITableView
 
@@ -154,6 +168,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _todoList.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 44;
 }
 
 /*
