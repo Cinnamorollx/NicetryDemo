@@ -14,7 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Task : NSObject
 
 typedef enum {
-    FinishedToday = 0,
+    FinishedNone = 0,
+    FinishedToday,
     FinishedTomorrow,
     FinishedThisWeekend,
     FinishedThisWeek,

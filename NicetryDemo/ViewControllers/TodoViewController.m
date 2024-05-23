@@ -6,10 +6,8 @@
 //
 
 #import "TodoViewController.h"
-#import "../Views/TodoItemTableViewCell.h"
 #import "../Models/Task.h"
 #import "Masonry.h"
-
 @interface TodoViewController ()<UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITextField *inputField;
@@ -26,6 +24,15 @@
 
 #pragma mark - Lifecycles
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _todoList = [[NSMutableArray alloc] init];
+        _finishedList = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -33,8 +40,8 @@
     [self addConstraints];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dayChanged) name:NSCalendarDayChangedNotification object:nil]; //没啥用，检测日期变了更新一下界面的日期,避免有人熬夜结果日期一直不变
     //TODO: 读取本地文件
-    [_todoTableView registerClass:[TodoItemTableViewCell class] forCellReuseIdentifier:@"todo-item-cell"];
-    
+//    [_todoTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"todo-item-cell"];
+    // 不register否则dequeue方法就不会返回nil，没法触发我的cell == nil 逻辑
 }
 
 - (void)dealloc {
@@ -51,6 +58,33 @@
     UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(checkHistory)];
     self.navigationItem.leftBarButtonItem = history;
     
+    //mock data
+    Task *mockTask = [[Task alloc] init];
+    mockTask.taskName = @"LoveDang";
+    mockTask.taskType = FinishedEveryday;
+    [_todoList addObject:mockTask];
+    
+    Task *mockTask1 = [[Task alloc] init];
+    mockTask1.taskName = @"cs2";
+    mockTask1.taskType = FinishedTomorrow;
+    [_todoList addObject:mockTask1];
+    
+    Task *mockTask2 = [[Task alloc] init];
+    mockTask2.taskName = @"吃饭睡觉";
+    mockTask2.taskType = FinishedNextWeek;
+    [_todoList addObject:mockTask2];
+    
+    Task *mockTask3 = [[Task alloc] init];
+    mockTask3.taskName = @"coding";
+    mockTask3.taskType = FinishedThisWeekend;
+    [_todoList addObject:mockTask3];
+    
+    Task *mockTask4 = [[Task alloc] init];
+    mockTask4.taskName = @"hahaha";
+    [_todoList addObject:mockTask4];
+    
+    
+    
     _inputField = [[UITextField alloc] init];
     _inputField.backgroundColor = [UIColor blueColor];
     [self.view addSubview:_inputField];
@@ -59,6 +93,10 @@
     _todoTableView = [[UITableView alloc] init];
     [self.view addSubview:_todoTableView];
     _todoTableView.backgroundColor = [UIColor redColor];
+    _todoTableView.delegate = self;
+    _todoTableView.dataSource = self;
+    _todoTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
     
     _timeLabel = [[UILabel alloc] init];
     NSDate *today = [NSDate date];
@@ -69,14 +107,11 @@
     [self.view addSubview:_timeLabel];
     
     _helloLabel = [[UILabel alloc] init];
-    _helloLabel.text = @"Hello, 今天也要加油喔⛽️😇";
+    _helloLabel.text = @"Hello, 今天也要加油喔 ⛽️";
     _helloLabel.font = [UIFont boldSystemFontOfSize:20];
     [self.view addSubview:_helloLabel];
     
-    Task *mockTask = [[Task alloc] init];
-    mockTask.taskName = @"LoveDang";
-    mockTask.taskType = FinishedEveryday;
-    [_todoList addObject:mockTask];
+    
 }
 
 - (void)addConstraints {
@@ -162,17 +197,68 @@
 #pragma mark - UITableView
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    TodoItemTableViewCell *cell = [_todoTableView dequeueReusableCellWithIdentifier:@"todo-item-cell"];
+    UITableViewCell *cell = [_todoTableView dequeueReusableCellWithIdentifier:@"todo-item-cell"];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"todo-item-cell"];
+        cell.layer.cornerRadius = 15.0;
+        cell.backgroundColor = [UIColor whiteColor];
+//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+    Task *currentTask = self.todoList[indexPath.section];
+    NSString *taskType;
+    switch (currentTask.taskType) {
+        case FinishedToday:
+            taskType = @"今天";
+            break;
+        case FinishedEveryday:
+            taskType = @"每天";
+            break;
+        case FinishedTomorrow:
+            taskType = @"明天";
+            break;
+        case FinishedNextWeek:
+            taskType = @"下周";
+            break;
+        case FinishedThisWeek:
+            taskType = @"这周";
+            break;
+        case FinishedThisWeekend:
+            taskType = @"这周末";
+            break;
+        case FinishedNone:
+            taskType = @"";
+            break;
+    }
+    
+    cell.detailTextLabel.text = taskType;
+    cell.textLabel.text = currentTask.taskName;
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return _todoList.count;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 44;
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 10.0;
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    UIView *marginView = [[UIView alloc] init];
+    
+    return marginView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 50;
+}
+
+#pragma mark - setter/getter
+
 
 /*
 #pragma mark - Navigation
