@@ -9,4 +9,14 @@
 
 @implementation Task
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.done = NO;
+        self.taskName = @"";
+        self.taskType = FinishedNone;
+    }
+    return self;
+}
+
 @end

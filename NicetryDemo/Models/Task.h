@@ -25,7 +25,7 @@ typedef enum {
 
 @property (nonatomic, strong) NSString *taskName;
 @property (nonatomic, assign) TaskType taskType;
-
+@property (nonatomic, assign) BOOL done;
 
 @end
 

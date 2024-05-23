@@ -36,9 +36,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor colorWithRed:215.f/255.f  green:242.f/255.f blue:252.f/255.f alpha:1.0];
     [self prepareViews];
     [self addConstraints];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dayChanged) name:NSCalendarDayChangedNotification object:nil]; //没啥用，检测日期变了更新一下界面的日期,避免有人熬夜结果日期一直不变
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
     //TODO: 读取本地文件
 //    [_todoTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"todo-item-cell"];
     // 不register否则dequeue方法就不会返回nil，没法触发我的cell == nil 逻辑
@@ -58,9 +62,10 @@
     UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(checkHistory)];
     self.navigationItem.leftBarButtonItem = history;
     
+    
     //mock data
     Task *mockTask = [[Task alloc] init];
-    mockTask.taskName = @"LoveDang";
+    mockTask.taskName = @"LoveD";
     mockTask.taskType = FinishedEveryday;
     [_todoList addObject:mockTask];
     
@@ -83,19 +88,26 @@
     mockTask4.taskName = @"hahaha";
     [_todoList addObject:mockTask4];
     
-    
+    Task *mockTask5 = [[Task alloc] init];
+    mockTask5.taskName = @"finished";
+    mockTask5.taskType = FinishedToday;
+    mockTask5.done = YES;
+    [_finishedList addObject:mockTask5];
     
     _inputField = [[UITextField alloc] init];
-    _inputField.backgroundColor = [UIColor blueColor];
+    _inputField.backgroundColor = [UIColor colorWithRed:206.f/255.f green:192.f/255.f blue:237.f/255.f alpha:1.0];
+    _inputField.layer.cornerRadius = 10;
     [self.view addSubview:_inputField];
     _inputField.delegate = self;
     
     _todoTableView = [[UITableView alloc] init];
     [self.view addSubview:_todoTableView];
-    _todoTableView.backgroundColor = [UIColor redColor];
+//    _todoTableView.backgroundColor = [UIColor redColor];
     _todoTableView.delegate = self;
     _todoTableView.dataSource = self;
     _todoTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//    _todoTableView.allowsSelection = NO;
+    _todoTableView.backgroundColor = [UIColor colorWithRed:215.f/255.f  green:242.f/255.f blue:252.f/255.f alpha:1.0];
     
     
     _timeLabel = [[UILabel alloc] init];
@@ -107,7 +119,7 @@
     [self.view addSubview:_timeLabel];
     
     _helloLabel = [[UILabel alloc] init];
-    _helloLabel.text = @"Hello, 今天也要加油喔 ⛽️";
+    _helloLabel.text = @"Hello, 今天也要加油喔⛽️";
     _helloLabel.font = [UIFont boldSystemFontOfSize:20];
     [self.view addSubview:_helloLabel];
     
@@ -125,7 +137,7 @@
     [_todoTableView mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.top.mas_equalTo(self.view.mas_safeAreaLayoutGuideTop).offset(60);
         make.top.mas_equalTo(_timeLabel.mas_bottom).offset(10);
-        make.bottom.mas_equalTo(_inputField.mas_top).offset(-10);
+        make.bottom.mas_equalTo(_inputField.mas_top).offset(-10); //-10
         make.left.mas_equalTo(self.view.mas_left).offset(10);
         make.right.mas_equalTo(self.view.mas_right).offset(-10);
     }];
@@ -184,9 +196,7 @@
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    [_inputField mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.bottom.mas_equalTo(k)
-    }];
+    
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -200,11 +210,20 @@
     UITableViewCell *cell = [_todoTableView dequeueReusableCellWithIdentifier:@"todo-item-cell"];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"todo-item-cell"];
-        cell.layer.cornerRadius = 15.0;
+        cell.layer.cornerRadius = 10;
+        cell.clipsToBounds = YES;
         cell.backgroundColor = [UIColor whiteColor];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+    }
+    Task *currentTask;
+    if(indexPath.section < _todoList.count) {
+        currentTask = self.todoList[indexPath.section];
+    } else {
+        currentTask = self.finishedList[indexPath.row];
 //        cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
-    Task *currentTask = self.todoList[indexPath.section];
+    
     NSString *taskType;
     switch (currentTask.taskType) {
         case FinishedToday:
@@ -232,19 +251,32 @@
     
     cell.detailTextLabel.text = taskType;
     cell.textLabel.text = currentTask.taskName;
+    cell.accessoryType = currentTask.done? UITableViewCellAccessoryCheckmark: UITableViewCellAccessoryNone;
+    
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    if (section < _todoList.count) {
+        return 1;
+    } else {
+        return _finishedList.count;
+    }
+    //如果是todoList里的cell那么每个section一个row，为了实现section空隙做的（别的方法不太会
+    //如果是finishedList里的cell那么就是在最后一个section然后很多row
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return _todoList.count;
+    if (_finishedList.count == 0) {
+        return _todoList.count;
+    } else {
+        return _todoList.count + 1;
+    }
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 10.0;
+    return 5.0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -254,7 +286,41 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 50;
+    return 55.5;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if(section == _todoList.count) {
+        return @"已完成😇🥳🥴";
+    }
+    return nil;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//    UITableViewCell *cell = [_todoTableView cellForRowAtIndexPath:indexPath];
+//    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    if(indexPath.section < _todoList.count) {
+        Task *selectedTask = [_todoList objectAtIndex:indexPath.section];
+        selectedTask.done = YES;
+//        [_finishedList addObject:selectedTask];
+        [_finishedList insertObject:selectedTask atIndex:0];
+        [_todoList removeObject:selectedTask];
+        [_todoTableView reloadData];
+    } else {
+        Task *selectedTask = [_finishedList objectAtIndex:indexPath.row];
+        selectedTask.done = NO;
+        [_todoList addObject:selectedTask];
+        [_finishedList removeObject:selectedTask];
+        [_todoTableView reloadData];
+    }
+    
+//    if(cell.accessoryType == UITableViewCellAccessoryCheckmark) {
+//        cell.accessoryType = UITableViewCellAccessoryNone;
+//    } else {
+//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+//    }
+    
+    
 }
 
 #pragma mark - setter/getter
@@ -269,6 +335,14 @@
     // Pass the selected object to the new view controller.
 }
 */
+#pragma mark - keyboard notification
 
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
+}
 
 @end
