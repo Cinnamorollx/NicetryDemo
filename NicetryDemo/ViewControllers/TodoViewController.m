@@ -94,6 +94,12 @@
     mockTask5.done = YES;
     [_finishedList addObject:mockTask5];
     
+    Task *mockTask6 = [[Task alloc] init];
+    mockTask6.taskName = @"finished2";
+    mockTask6.taskType = FinishedTomorrow;
+    mockTask6.done = YES;
+    [_finishedList addObject:mockTask6];
+    
     _inputField = [[UITextField alloc] init];
     _inputField.backgroundColor = [UIColor colorWithRed:206.f/255.f green:192.f/255.f blue:237.f/255.f alpha:1.0];
     _inputField.layer.cornerRadius = 10;
@@ -220,7 +226,7 @@
     if(indexPath.section < _todoList.count) {
         currentTask = self.todoList[indexPath.section];
     } else {
-        currentTask = self.finishedList[indexPath.row];
+        currentTask = self.finishedList[indexPath.section - _todoList.count];
 //        cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     
@@ -257,20 +263,20 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section < _todoList.count) {
-        return 1;
-    } else {
-        return _finishedList.count;
-    }
-    //如果是todoList里的cell那么每个section一个row，为了实现section空隙做的（别的方法不太会
-    //如果是finishedList里的cell那么就是在最后一个section然后很多row
+//    if (section < _todoList.count) {
+//        return 1;
+//    } else {
+//        return _finishedList.count;
+//    }
+//    
+    return 1;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (_finishedList.count == 0) {
         return _todoList.count;
     } else {
-        return _todoList.count + 1;
+        return _todoList.count + _finishedList.count;
     }
     
 }
@@ -307,7 +313,7 @@
         [_todoList removeObject:selectedTask];
         [_todoTableView reloadData];
     } else {
-        Task *selectedTask = [_finishedList objectAtIndex:indexPath.row];
+        Task *selectedTask = [_finishedList objectAtIndex:(indexPath.section - _todoList.count)];
         selectedTask.done = NO;
         [_todoList addObject:selectedTask];
         [_finishedList removeObject:selectedTask];
