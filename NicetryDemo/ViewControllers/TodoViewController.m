@@ -14,6 +14,7 @@
 @property (nonatomic, strong) UITableView *todoTableView;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *helloLabel;
+@property (nonatomic, strong) UIView *grayArea;
 
 @property (nonatomic, strong) NSMutableArray<Task *> *todoList;
 @property (nonatomic, strong) NSMutableArray<Task *> *finishedList;
@@ -46,10 +47,21 @@
     //TODO: 读取本地文件
 //    [_todoTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"todo-item-cell"];
     // 不register否则dequeue方法就不会返回nil，没法触发我的cell == nil 逻辑
+    
+    
+//    [_todoTableView deleteRowsAtIndexPaths:@[] withRowAnimation:1];
+//    _todoTableView performBatchUpdates:^{
+//        ;
+//    } completion:^(BOOL finished) {
+//        <#code#>
+//    }
+    
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSCalendarDayChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 
@@ -129,7 +141,12 @@
     _helloLabel.font = [UIFont boldSystemFontOfSize:20];
     [self.view addSubview:_helloLabel];
     
-    
+    _grayArea = [[UIView alloc] init];
+    _grayArea.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:0.5];
+    [self.view addSubview:_grayArea];
+    _grayArea.hidden = YES;
+    UITapGestureRecognizer *tapGray = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(stopTyping)];
+    [_grayArea addGestureRecognizer:tapGray];
 }
 
 - (void)addConstraints {
@@ -157,7 +174,11 @@
         make.top.mas_equalTo(_helloLabel.mas_bottom).offset(5);
         make.left.mas_equalTo(self.view.mas_left).offset(20);
     }];
+    
+//    _todoTableView
 }
+
+
 
 #pragma mark - Methods
 
@@ -192,12 +213,16 @@
     //TODO: 当数组变化保存本地文件
 }
 
+- (void)stopTyping {
+    [_inputField resignFirstResponder];
+}
+
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSLog(@"task added %@",_inputField.text);
     _inputField.text = @"";
-    [_inputField resignFirstResponder];
+    [self stopTyping];
     return YES;
 }
 
@@ -344,11 +369,34 @@
 #pragma mark - keyboard notification
 
 - (void)keyboardWillShow:(NSNotification *)notification {
+    NSLog(@"keyboard shows");
+    CGRect keyboardBounds = [[notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = keyboardBounds.size.height;
+    //网上抄的获取键盘高度方法
+    
+    [_inputField mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideBottom).offset(-keyboardHeight + self.view.safeAreaInsets.bottom);
+    }];
+    
+//    [self.view layoutIfNeeded];
+//    [self.view setNeedsLayout];
+    [_grayArea mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top);
+        make.left.equalTo(self.view.mas_left);
+        make.right.equalTo(self.view.mas_right);
+        make.bottom.equalTo(self.inputField.mas_top);//
+    }];
+    _grayArea.hidden = NO;
     
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    
+    NSLog(@"keyboard hides");
+    _grayArea.hidden = YES;
+    [_inputField mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.view.mas_safeAreaLayoutGuideBottom).offset(-20);
+    }];
+//    [self.view setNeedsLayout];
 }
 
 @end
