@@ -71,8 +71,8 @@
     self.navigationItem.title = @"Todo List";
     UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonClicked)];
     self.navigationItem.rightBarButtonItem = add;
-    UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(checkHistory)];
-    self.navigationItem.leftBarButtonItem = history;
+//    UIBarButtonItem *history = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(checkHistory)];
+//    self.navigationItem.leftBarButtonItem = history;
     
     
     //mock data
@@ -184,6 +184,7 @@
 
 - (void) addButtonClicked {
     NSLog(@"add button clicked");
+    [_inputField becomeFirstResponder];
 }
 
 - (void) addItem {
@@ -192,8 +193,8 @@
     NSLog(@"new task name: %@", newName);
     Task *newTask = [[Task alloc] init];
     newTask.taskName = newName;
-    newTask.taskType = FinishedEveryday;
-    [_todoList addObject:newTask];
+    [_todoList insertObject:newTask atIndex:0];
+    [_todoTableView reloadData];
 }
 
 - (void)dayChanged {
@@ -221,6 +222,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSLog(@"task added %@",_inputField.text);
+    [self addItem];
     _inputField.text = @"";
     [self stopTyping];
     return YES;
@@ -288,12 +290,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    if (section < _todoList.count) {
-//        return 1;
-//    } else {
-//        return _finishedList.count;
-//    }
-//    
     return 1;
 }
 
@@ -345,27 +341,40 @@
         [_todoTableView reloadData];
     }
     
-//    if(cell.accessoryType == UITableViewCellAccessoryCheckmark) {
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//    } else {
-//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-//    }
-    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
 }
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"移除";
+}
+
+- (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath {
+    __weak typeof(self) weakSelf = self;
+    UIContextualAction *action = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"移除" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
+        __strong typeof(self) strongSelf = weakSelf;
+        if (indexPath.section >= strongSelf.todoList.count) { //说明是在finishedList
+            [strongSelf.finishedList removeObjectAtIndex:(indexPath.section - strongSelf.todoList.count)];
+            [strongSelf.todoTableView deleteSections:[NSIndexSet indexSetWithIndex:(indexPath.section - strongSelf.todoList.count)] withRowAnimation:UITableViewRowAnimationFade];
+        } else {
+            [strongSelf.todoList removeObjectAtIndex:indexPath.section];
+            [strongSelf.todoTableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+        }
+        completionHandler(YES);
+    }];
+    
+    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[action]];
+    [self.todoTableView setNeedsLayout];
+    return config;
+}
+
 
 #pragma mark - setter/getter
 
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 #pragma mark - keyboard notification
 
 - (void)keyboardWillShow:(NSNotification *)notification {
